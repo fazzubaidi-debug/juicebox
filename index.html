@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juice Box Blend | Smoothie Catalog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAFAFA;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 2rem;
+            justify-items: center;
+        }
+        @media (min-width: 640px) {
+            .masonry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (min-width: 768px) {
+            .masonry-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+        }
+        @media (min-width: 1024px) {
+            .masonry-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; }
+        }
+
+        .break-inside-avoid {
+            break-inside: avoid;
+        }
+
+        /* Smooth fade in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* Clean Logo Styles */
+        .site-logo {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            display: block;
+        }
+
+        #navbar {
+            height: 110px;
+            background-color: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+
+        #header-content {
+            transform-origin: center top;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            will-change: transform, opacity;
+        }
+
+        #navbar.nav-shrink #header-content {
+            transform: scale(0.92);
+            opacity: 0.95;
+        }
+
+        #header-logo {
+            transition: transform 0.3s ease;
+            will-change: transform;
+            transform: translateY(-6px);
+        }
+
+        #navbar.nav-shrink #header-logo {
+            transform: translateY(-6px) scale(0.75);
+        }
+
+        .contact-btn {
+            transition: transform 0.3s ease;
+            will-change: transform;
+        }
+
+        #navbar.nav-shrink .contact-btn {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#00D2FF] selection:text-white relative">
+
+    <!-- Navigation / Ribbon -->
+    <nav class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl border-b border-cyan-100 shadow-sm transition-all duration-300" id="navbar">
+        <!-- Container constrained to max-w-7xl for balance -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between transition-all duration-300 py-5" id="header-content">
+                
+                <!-- Logo -->
+                <a href="#" class="flex-shrink-0 group">
+                <img id="header-logo" src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/948dcd9e-a03e-49ef-be90-02ad303dcdd2_320w.png" alt="Juice Box Blend" class="site-logo object-contain transition-all duration-300 w-[90px] h-[90px] hover:scale-105 drop-shadow-lg">
+                </a>
+
+                <!-- Category Navigation (centered) -->
+                <div class="flex-1 flex justify-center gap-12">
+                    <a href="#smoothies" class="font-semibold text-black hover:opacity-70 transition">Smoothies</a>
+                    <a href="#smoothie-bowls" class="font-semibold text-black hover:opacity-70 transition">Smoothie Bowls</a>
+                    <a href="#raw-juice" class="font-semibold text-black hover:opacity-70 transition">Raw Juice</a>
+                </div>
+
+                <!-- Contact Button -->
+                <div class="flex-shrink-0">
+                    <button onclick="scrollToFooter()" class="contact-btn text-sm font-bold bg-[#FFD700] hover:bg-[#FACC15] text-black px-6 py-2.5 rounded-full transition-all hover:scale-105 border border-black/5 shadow-sm">
+                        Contact
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen">
+        
+        <!-- Section: Smoothies -->
+        <section id="smoothies" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Smoothies</h2>
+            <div id="smoothies-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Smoothie Bowls -->
+        <section id="smoothie-bowls" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Smoothie Bowls</h2>
+            <div id="smoothie-bowls-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Raw Juice -->
+        <section id="raw-juice" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Raw Juice</h2>
+            <div id="raw-juice-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loader" class="w-full h-20 flex justify-center items-center opacity-0 pointer-events-none"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="w-full bg-white border-t border-cyan-100 py-20 relative overflow-hidden">
+        <!-- Decorative subtle background element -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-cyan-50/50 to-transparent rounded-full blur-3xl -z-10 pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            
+            <!-- Large Footer Logo Section -->
+            <div class="flex justify-center mb-10">
+                <button type="button" onclick="scrollToTop()" class="focus:outline-none" aria-label="Scroll to top">
+                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/948dcd9e-a03e-49ef-be90-02ad303dcdd2_320w.png" alt="Juice Box Blend Logo" class="h-32 w-auto object-contain hover:scale-105 transition-transform duration-500 drop-shadow-sm">
+                </button>
+            </div>
+
+            <h2 class="text-3xl font-bold tracking-tight mb-6 text-black">Get in Touch</h2>
+            <p class="text-stone-500 mb-10 max-w-lg mx-auto leading-relaxed">Have a question about our blends or want to collaborate? Reach out to us directly or slide into our DMs.</p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                <a href="tel:313-305-4458" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#FAFAFA] hover:bg-[#E0F7FA] text-stone-800 hover:text-[#00838F] font-semibold transition-colors border border-stone-200 hover:border-[#00D2FF]/30 group">
+                    <iconify-icon icon="solar:phone-linear" width="20" class="group-hover:scale-110 transition-transform"></iconify-icon>
+                    313-305-4458
+                </a>
+                
+                <a href="https://www.instagram.com/juicebox_blend/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#FAFAFA] hover:bg-[#FFF9C4] text-stone-800 hover:text-[#F57F17] font-semibold transition-colors border border-stone-200 hover:border-[#FFD700]/50 group">
+                    <iconify-icon icon="mdi:instagram" width="22" class="group-hover:scale-110 transition-transform"></iconify-icon>
+                    @juicebox_blend
+                </a>
+            </div>
+
+            <div class="mt-16 flex flex-col items-center gap-3 text-black border-t border-stone-100 pt-10">
+                <div class="text-[11px] tracking-[0.2em] uppercase text-stone-400 font-medium">Copyright © 2025 Juice Box Blend - All Rights Reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Detailed Modal -->
+    <div id="modal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-hidden="true">
+        <!-- Backdrop -->
+        <div class="transition-opacity duration-300 bg-stone-900/20 absolute top-0 right-0 bottom-0 left-0 backdrop-blur-sm" onclick="closeModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="absolute inset-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[600px] h-full md:h-auto md:max-h-[85vh] bg-white md:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row transition-all duration-500 transform scale-95 opacity-0" id="modal-panel">
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-black/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-[#FFD700] hover:text-black transition-all">
+                <iconify-icon icon="solar:close-circle-linear" width="24" class="" height="24" style="color: rgb(0, 0, 0);"></iconify-icon>
+            </button>
+
+            <!-- Image Side -->
+            <div class="w-full md:w-1/2 h-1/2 md:h-auto relative bg-stone-100">
+                <img id="modal-img" src="" alt="Smoothie" decoding="async" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            </div>
+
+            <!-- Content Side -->
+            <div class="md:w-1/2 md:p-10 flex flex-col overflow-y-auto transition-colors duration-500 bg-[#FAF5FF] w-full pt-8 pr-8 pb-8 pl-8">
+                <div class="mb-auto">
+                    <h2 id="modal-title" class="text-3xl font-bold tracking-tight text-[#1a1a1a] mb-2 leading-tight">Blast Berry</h2>
+                    
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-[#00D2FF] mb-4">Ingredients</h3>
+                    <ul id="modal-ingredients" class="space-y-3">
+                <li class="flex gap-3 last:border-0 border-black/5 border-b pt-2 pb-2 gap-x-3 gap-y-3 items-center">
+                    <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
+                        <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5261332e-2482-4e12-9be0-134f84e4bea1_320w.png?w=800&q=80" alt="" class="w-4 h-4 object-contain">
+                    </div>
+                    <span class="text-sm font-semibold text-stone-700">Blueberries</span>
+                </li>
+            
+                <li class="flex items-center gap-3 py-2 border-b border-black/5 last:border-0">
+                    <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
+                        <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/fc010ee8-ac54-4b46-8f5a-fd105ae9b94f_320w.png?w=800&q=80" alt="" class="w-4 h-4 object-contain">
+                    </div>
+                    <span class="text-sm font-semibold text-stone-700">Strawberries</span>
+                </li>
+            
+                <li class="flex gap-3 last:border-0 border-black/5 border-b pt-2 pb-2 gap-x-3 gap-y-3 items-center">
+                    <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
+                        <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/4e8a9439-ab07-4618-9e77-449bb2d7f0a0_320w.png?w=800&q=80" alt="" class="w-4 h-4 object-contain">
+                    </div>
+                    <span class="text-sm font-semibold text-stone-700">Raspberries</span>
+                </li>
+            
+                <li class="flex items-center gap-3 py-2 border-b border-black/5 last:border-0">
+                    <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
+                        <img src="https://kknyjeyylkrpdsmziogx.supabase.co/storage/v1/object/public/juicebox-storage-bucket/juicebox-pics/icons/apple-juice-icon.png" alt="" class="w-4 h-4 object-contain">
+                    </div>
+                    <span class="text-sm font-semibold text-stone-700">Apple juice</span>
+                </li>
+            </ul>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-stone-100"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================
+        // SUPABASE IMAGE ROUTING
+        // ================================
+
+        const BASE_URL =
+            "https://kknyjeyylkrpdsmziogx.supabase.co/storage/v1/object/public/juicebox-storage-bucket/juicebox-pics/";
+
+        function formatFileName(name) {
+            return name
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-z0-9-]/g, "");
+        }
+
+        function getImagePath(name, sectionType) {
+            let folder = "smoothies/";
+
+            if (sectionType === "bowl") folder = "smoothie-bowls/";
+            if (sectionType === "juice") folder = "raw-juice/";
+
+            return BASE_URL + folder + formatFileName(name) + ".jpg";
+        }
+
+        // --- Data ---
+        const rawJuice = [
+            { name: "Citrus Blast", ingredients: ["Orange", "Lemon", "Ginger"], color: "yellow" },
+            { name: "Relief", ingredients: ["Apple", "Celery", "Ginger", "Cucumber", "Pineapple"], color: "green" },
+            { name: "Carrot Elixir", ingredients: ["Carrots", "Orange", "Ginger"], color: "red" },
+            { name: "Boost", ingredients: ["Honey", "Lemon", "Ginger", "Pomegranate"], color: "red" },
+            { name: "Pomegranate", ingredients: ["Pomegranate"], color: "red" }
+        ];
+
+        const smoothies = [
+            { name: "Tropical Avocado", ingredients: ["Strawberries", "Avocados", "Vanilla Ice Cream"], color: "green" },
+            { name: "Dream Berry", ingredients: ["Strawberries", "Blueberries", "Lemon", "Orange", "Pineapple", "Vanilla Ice Cream"], color: "purple" },
+            { name: "Araysi", ingredients: ["Mango", "Milk", "Vanto Syrup"], color: "yellow" },
+            { name: "Strawberry Banana", ingredients: ["Strawberries", "Banana", "Vanilla Ice Cream", "Milk"], color: "red" },
+            { name: "Strawberry Blast", ingredients: ["Strawberries", "Lemon", "Orange", "Mango"], color: "red" },
+            { name: "Mango", ingredients: ["Mango", "Milk"], color: "yellow" },
+            { name: "Pineapple Lover", ingredients: ["Pineapples"], color: "yellow" },
+            { name: "Banana Milk", ingredients: ["Banana", "Vanilla Ice Cream", "Milk"], color: "yellow" },
+            { name: "Dragon Fruit", ingredients: ["Dragon Fruit Sorbet"], color: "purple" },
+            { name: "Berry Blast", ingredients: ["Strawberries", "Blueberries"], color: "purple" },
+            { name: "Pina Colada", ingredients: ["Pineapple", "Pina Colada mix", "Milk", "Coconut flakes"], color: "yellow" },
+            { name: "Mango Raspberry", ingredients: ["Mango", "Milk", "Raspberry"], color: "red" },
+            { name: "Honey Avocado", ingredients: ["Avocados", "Vanilla Ice Cream", "Honey"], color: "green" },
+            { name: "Kiwi Quencher", ingredients: ["Kiwi"], color: "green" },
+            { name: "Watermelon Blast", ingredients: ["Watermelon"], color: "red" },
+            { name: "Berry Banana Blast", ingredients: ["Strawberries", "Banana", "Blueberries", "Vanilla Ice Cream", "Milk"], color: "purple" },
+            { name: "Islander", ingredients: ["Vanilla Ice Cream", "Strawberries", "Mango", "Avocado", "Milk"], color: "yellow" },
+            { name: "Cosmos", ingredients: ["Pomegranate", "Mango", "Strawberries", "Banana", "Vanilla Ice Cream", "Milk"], color: "purple" }
+        ];
+
+        const smoothieBowls = [
+            { name: "Acai Berry Dream", ingredients: ["Acai sorbet", "Sliced strawberries", "Blueberries", "Granola", "Nutella"], color: "purple" },
+            { name: "Pina Kiwi Delight", ingredients: ["Pina Colada base"], color: "yellow" },
+            { name: "Banana Berry Blast Bowl", ingredients: ["Strawberries", "Blueberries", "Banana", "Vanilla Ice Cream", "Milk", "Sliced strawberries", "Sliced banana", "Blueberries", "Granola", "Chocolate syrup", "Peanut butter"], color: "purple" },
+            { name: "Strawberry Banana Crunch", ingredients: ["Strawberries", "Banana", "Vanilla Ice Cream", "Milk", "Granola", "Nutella", "Peanut butter"], color: "red" }
+        ];
+
+        const rawJuiceGrid = document.getElementById('raw-juice-grid');
+        const smoothiesGrid = document.getElementById('smoothies-grid');
+        const smoothieBowlsGrid = document.getElementById('smoothie-bowls-grid');
+
+        function scrollToFooter() {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- Header Scroll Effect ---
+        const navbar = document.getElementById('navbar');
+        let headerIsShrunk = false;
+        let headerRaf = null;
+
+        function updateHeaderShrink() {
+            const y = window.scrollY;
+            const shouldShrink = headerIsShrunk ? y > 16 : y > 24;
+            if (shouldShrink === headerIsShrunk) return;
+            headerIsShrunk = shouldShrink;
+            navbar.classList.toggle('nav-shrink', headerIsShrunk);
+        }
+
+        updateHeaderShrink();
+        window.addEventListener('scroll', () => {
+            if (headerRaf) return;
+            headerRaf = requestAnimationFrame(() => {
+                headerRaf = null;
+                updateHeaderShrink();
+            });
+        });
+
+        // --- Ingredient Icon Logic (icons in juicebox-pics/icons/ — all .png) ---
+        function getIngredientIcon(ingredient) {
+            const lower = ingredient.toLowerCase();
+            const iconsPath = BASE_URL + 'icons/';
+            if (lower.includes('strawberry') && lower.includes('pur')) return iconsPath + 'strawberry-puree-icon.png';
+            if (lower.includes('strawberr')) return iconsPath + 'strawberries-icon.png';
+            if (lower.includes('blueberr')) return iconsPath + 'blueberries-icon.png';
+            if (lower.includes('raspberr')) return iconsPath + 'raspberries-icon.png';
+            if (lower.includes('blackberr')) return iconsPath + 'blackberries-icon.png';
+            if (lower.includes('banana')) return iconsPath + 'banana-icon.png';
+            if (lower.includes('milk') || lower.includes('coconut milk')) return iconsPath + 'milk-carton-icon.png';
+            if (lower.includes('coconut water')) return iconsPath + 'coconut-water-icon.png';
+            if (lower.includes('coconut flakes')) return iconsPath + 'coconut-water-icon.png';
+            if (lower.includes('apple juice')) return iconsPath + 'apple-juice-icon.png';
+            if (lower.includes('apple')) return iconsPath + 'apple-juice-icon.png';
+            if (lower.includes('orange juice')) return iconsPath + 'orange-juice-icon.png';
+            if (lower.includes('orange')) return iconsPath + 'orange-juice-icon.png';
+            if (lower.includes('pineapple juice')) return iconsPath + 'pineapple-juice-icon.png';
+            if (lower.includes('pineapple')) return iconsPath + 'pineapple-icon.png';
+            if (lower.includes('kiwi')) return iconsPath + 'kiwi-icon.png';
+            if (lower.includes('honey')) return iconsPath + 'honey-icon.png';
+            if (lower.includes('lemon')) return iconsPath + 'lemon-icon.png';
+            if (lower.includes('ginger')) return iconsPath + 'ginger-icon.png';
+            if (lower.includes('celery')) return iconsPath + 'celery-icon.png';
+            if (lower.includes('cucumber')) return iconsPath + 'cucumber-icon.png';
+            if (lower.includes('carrot')) return iconsPath + 'carrots-icon.png';
+            if (lower.includes('pomegranate')) return iconsPath + 'pomegranate-icon.png';
+            if (lower.includes('vanilla ice cream')) return iconsPath + 'vanilla-ice-cream-icon.png';
+            if (lower.includes('vanto syrup')) return iconsPath + 'vanto-syrup-icon.png';
+            if (lower.includes('dragon fruit') || lower.includes('pitaya') || lower.includes('sorbet')) return iconsPath + 'dragon-fruit-icon.png';
+            if (lower.includes('pina colada')) return iconsPath + 'pineapple-icon.png';
+            if (lower.includes('watermelon')) return iconsPath + 'watermelon-icon.png';
+            if (lower.includes('acai') || lower.includes('açaí')) return iconsPath + 'acai-puree-icon.png';
+            if (lower.includes('avocado') || lower.includes('avocado'.replace('o', 'a'))) return iconsPath + 'avacado-icon.png';
+            if (lower.includes('mango')) return iconsPath + 'mango-icon.png';
+            if (lower.includes('granola')) return iconsPath + 'granola-icon.png';
+            if (lower.includes('nutella')) return iconsPath + 'nutella-icon.png';
+            if (lower.includes('chocolate syrup')) return iconsPath + 'chocolate-syrup-icon.png';
+            if (lower.includes('peanut butter')) return iconsPath + 'peanut-butter-icon.png';
+            if (lower.includes('mix any')) return iconsPath + 'peach-icon.png';
+            return iconsPath + 'peach-icon.png';
+        }
+
+        function getDietaryIcons(ingredients) {
+            const list = ingredients.join(' ').toLowerCase();
+            let icons = [];
+            if (!list.includes('milk') && !list.includes('honey')) icons.push({icon: BASE_URL + 'icons/peach-icon.png', tooltip: 'Vegan'});
+            return icons;
+        }
+
+        // --- Rendering ---
+        function createCard(smoothie, sectionType) {
+            const aspectClass = sectionType === 'juice' ? 'aspect-[4/5]' : 'aspect-[3/4]';
+            const card = document.createElement('div');
+            card.className = "break-inside-avoid w-full max-w-sm relative rounded-3xl overflow-hidden cursor-pointer group bg-white shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-500 animate-fade-in border border-stone-100";
+            
+            const peekIcons = smoothie.ingredients.slice(0, 3).map(ing => {
+                const iconSrc = getIngredientIcon(ing);
+                return `<div class="w-7 h-7 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-sm" title="${ing}">
+                    <img src="${iconSrc}" alt="" loading="lazy" decoding="async" class="w-3.5 h-3.5 object-contain">
+                 </div>`;
+            }).join('');
+
+            card.innerHTML = `
+                <div class="relative w-full ${aspectClass} overflow-hidden bg-stone-100">
+                    <img 
+  src="${smoothie.img}" 
+  alt="${smoothie.name}" 
+  loading="lazy" 
+  decoding="async"
+  width="400"
+  height="${sectionType === 'juice' ? 500 : 533}"
+  class="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+>
+                    
+                    <!-- Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
+                        <div class="transform translate-y-3 group-hover:translate-y-0 transition-transform duration-500 delay-75 flex flex-col items-start">
+                            <h3 class="text-white text-xl font-bold tracking-tight leading-tight drop-shadow-sm mb-2">${smoothie.name}</h3>
+                            <div class="flex gap-2 pt-3 border-t border-white/20 w-full">
+                                ${peekIcons}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            card.onclick = () => openModal(smoothie);
+            return card;
+        }
+
+        function loadSectionItems(items, gridEl, sectionType) {
+            if (!gridEl) return;
+            const type = sectionType || 'smoothie';
+            items.forEach(item => {
+                item.img = getImagePath(item.name, type);
+                gridEl.appendChild(createCard(item, type));
+            });
+        }
+
+        // --- Modal Logic ---
+        const modal = document.getElementById('modal');
+        const modalPanel = document.getElementById('modal-panel');
+        
+        function openModal(smoothie) {
+            document.getElementById('modal-title').innerText = smoothie.name;
+            document.getElementById('modal-img').src = smoothie.img;
+            
+            const colorMap = {
+                'green': 'bg-[#F0FDF4]',
+                'red': 'bg-[#FEF2F2]',
+                'yellow': 'bg-[#FFFBEB]',
+                'purple': 'bg-[#FAF5FF]'
+            };
+            const tintClass = colorMap[smoothie.color] || 'bg-white';
+            
+            modalPanel.querySelector('.overflow-y-auto').className = `w-full md:w-1/2 p-8 md:p-10 flex flex-col overflow-y-auto transition-colors duration-500 ${tintClass}`;
+
+            const list = document.getElementById('modal-ingredients');
+            list.innerHTML = smoothie.ingredients.map(ing => `
+                <li class="flex items-center gap-3 py-2 border-b border-black/5 last:border-0">
+                    <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
+                        <img src="${getIngredientIcon(ing)}" alt="" class="w-4 h-4 object-contain">
+                    </div>
+                    <span class="text-sm font-semibold text-stone-700">${ing}</span>
+                </li>
+            `).join('');
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                modalPanel.classList.remove('scale-95', 'opacity-0');
+                modalPanel.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modalPanel.classList.remove('scale-100', 'opacity-100');
+            modalPanel.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        // Initialize
+        loadSectionItems(smoothies, smoothiesGrid, 'smoothie');
+        loadSectionItems(smoothieBowls, smoothieBowlsGrid, 'bowl');
+        loadSectionItems(rawJuice, rawJuiceGrid, 'juice');
+
+    </script>
+</body></html>
