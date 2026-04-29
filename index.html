@@ -21,19 +21,22 @@
         }
 
         .masonry-grid {
-            display: grid;
-            grid-template-columns: repeat(1, minmax(0, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 2rem;
-            justify-items: center;
+        }
+        .masonry-grid > * {
+            width: 100%;
         }
         @media (min-width: 640px) {
-            .masonry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .masonry-grid > * { width: calc((100% - 2rem) / 2); }
         }
         @media (min-width: 768px) {
-            .masonry-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+            .masonry-grid > * { width: calc((100% - 4rem) / 3); }
         }
         @media (min-width: 1024px) {
-            .masonry-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; }
+            .masonry-grid > * { width: calc((100% - 6rem) / 4); }
         }
 
         .break-inside-avoid {
@@ -95,6 +98,46 @@
         #navbar.nav-shrink .contact-btn {
             transform: scale(0.9);
         }
+
+        /* Dropdown nav: match site design */
+        .nav-dropdown-trigger {
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .nav-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(0px);
+            min-width: 180px;
+            padding: 0.5rem 0;
+            background: rgba(255,255,255,0.98);
+            border: 1px solid rgb(207,250,254);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            z-index: 60;
+        }
+        .nav-dropdown-trigger:hover .nav-dropdown {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0px);
+        }
+        .nav-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            transition: background 0.2s ease;
+        }
+        .nav-dropdown a:hover {
+            background: rgba(224,247,250,0.6);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-[#00D2FF] selection:text-white relative">
@@ -110,11 +153,39 @@
                 <img id="header-logo" src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/948dcd9e-a03e-49ef-be90-02ad303dcdd2_320w.png" alt="Juice Box Blend" class="site-logo object-contain transition-all duration-300 w-[90px] h-[90px] hover:scale-105 drop-shadow-lg">
                 </a>
 
-                <!-- Category Navigation (centered) -->
-                <div class="flex-1 flex justify-center gap-12">
-                    <a href="#smoothies" class="font-semibold text-black hover:opacity-70 transition">Smoothies</a>
-                    <a href="#smoothie-bowls" class="font-semibold text-black hover:opacity-70 transition">Smoothie Bowls</a>
-                    <a href="#raw-juice" class="font-semibold text-black hover:opacity-70 transition">Raw Juice</a>
+                <!-- Category Navigation (centered, dropdowns — order matches page top-to-bottom) -->
+                <div class="flex-1 flex justify-center items-center gap-10">
+                    <div class="nav-dropdown-trigger">
+                        <span class="font-semibold text-black hover:opacity-70 transition cursor-pointer inline-block">Smoothies &amp; Bowls</span>
+                        <div class="nav-dropdown">
+                            <a href="#smoothies">Smoothies</a>
+                            <a href="#smoothie-bowls">Smoothie Bowls</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown-trigger">
+                        <span class="font-semibold text-black hover:opacity-70 transition cursor-pointer inline-block">Juice &amp; Refreshers</span>
+                        <div class="nav-dropdown">
+                            <a href="#raw-juice">Raw Juices</a>
+                            <a href="#energy-refreshers">Energy Refreshers</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown-trigger">
+                        <span class="font-semibold text-black hover:opacity-70 transition cursor-pointer inline-block">Coffee &amp; Tea</span>
+                        <div class="nav-dropdown">
+                            <a href="#hot-drinks">Hot Drinks</a>
+                            <a href="#espresso">Espresso</a>
+                            <a href="#traditional-stove-top">Traditional Stove-top</a>
+                            <a href="#iced-drinks">Iced Drinks</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown-trigger">
+                        <span class="font-semibold text-black hover:opacity-70 transition cursor-pointer inline-block">Ice Cream &amp; Shakes</span>
+                        <div class="nav-dropdown">
+                            <a href="#milkshakes">Milkshakes</a>
+                            <a href="#cereal-milkshakes">Cereal Milkshakes</a>
+                            <a href="#ice-cream">Ice Cream</a>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Contact Button -->
@@ -146,6 +217,54 @@
         <section id="raw-juice" class="py-16">
             <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Raw Juice</h2>
             <div id="raw-juice-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Energy Refreshers -->
+        <section id="energy-refreshers" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Energy Refreshers</h2>
+            <div id="energy-refreshers-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Hot Drinks -->
+        <section id="hot-drinks" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Hot Drinks</h2>
+            <div id="hot-drinks-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Espresso -->
+        <section id="espresso" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Espresso</h2>
+            <div id="espresso-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Traditional Stove-top -->
+        <section id="traditional-stove-top" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Traditional Stove-top</h2>
+            <div id="traditional-stove-top-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Iced Drinks -->
+        <section id="iced-drinks" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Iced Drinks</h2>
+            <div id="iced-drinks-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Milkshakes -->
+        <section id="milkshakes" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Milkshakes</h2>
+            <div id="milkshakes-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Cereal Milkshakes -->
+        <section id="cereal-milkshakes" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Cereal Milkshakes</h2>
+            <div id="cereal-milkshakes-grid" class="masonry-grid w-full"></div>
+        </section>
+
+        <!-- Section: Ice Cream -->
+        <section id="ice-cream" class="py-16">
+            <h2 class="text-3xl font-bold tracking-tight text-black mb-8 text-center">Ice Cream</h2>
+            <div id="ice-cream-grid" class="masonry-grid w-full"></div>
         </section>
 
         <!-- Loading Indicator -->
@@ -209,8 +328,8 @@
             <div class="md:w-1/2 md:p-10 flex flex-col overflow-y-auto transition-colors duration-500 bg-[#FAF5FF] w-full pt-8 pr-8 pb-8 pl-8">
                 <div class="mb-auto">
                     <h2 id="modal-title" class="text-3xl font-bold tracking-tight text-[#1a1a1a] mb-2 leading-tight">Blast Berry</h2>
-                    
-                    <h3 class="text-xs font-bold uppercase tracking-widest text-[#00D2FF] mb-4">Ingredients</h3>
+                    <p id="modal-description" class="text-sm text-stone-600 mb-4" style="display:none;"></p>
+                    <h3 id="modal-ingredients-heading" class="text-xs font-bold uppercase tracking-widest text-[#00D2FF] mb-4">Ingredients</h3>
                     <ul id="modal-ingredients" class="space-y-3">
                 <li class="flex gap-3 last:border-0 border-black/5 border-b pt-2 pb-2 gap-x-3 gap-y-3 items-center">
                     <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
@@ -263,13 +382,21 @@
                 .replace(/[^a-z0-9-]/g, "");
         }
 
-        function getImagePath(name, sectionType) {
+        function getImagePath(name, sectionType, imageFile) {
             let folder = "smoothies/";
-
             if (sectionType === "bowl") folder = "smoothie-bowls/";
             if (sectionType === "juice") folder = "raw-juice/";
+            if (sectionType === "hot") folder = "hot-drinks/";
+            if (sectionType === "espresso") folder = "espresso/";
+            if (sectionType === "stove") folder = "traditional-stove-top/";
+            if (sectionType === "iced") folder = "iced-drinks/";
+            if (sectionType === "milkshake") folder = "milkshakes/";
+            if (sectionType === "cereal-milkshake") folder = "cereal-milkshakes/";
+            if (sectionType === "ice-cream") folder = "ice-cream/";
+            if (sectionType === "energy") folder = "energy-refreshers/";
 
-            return BASE_URL + folder + formatFileName(name) + ".jpg";
+            const filename = imageFile || (formatFileName(name) + ".jpg");
+            return BASE_URL + folder + filename;
         }
 
         // --- Data ---
@@ -309,9 +436,93 @@
             { name: "Strawberry Banana Crunch", ingredients: ["Strawberries", "Banana", "Vanilla Ice Cream", "Milk", "Granola", "Nutella", "Peanut butter"], color: "red" }
         ];
 
+        const hotDrinks = [
+            { name: "Yemeni Latte", imageFile: "yemeni-latte.jpg", noIngredients: true, color: "yellow" },
+            { name: "Spanish Latte", imageFile: "spanish-latte-hot.jpg", noIngredients: true, color: "yellow" },
+            { name: "Caramel Latte", imageFile: "caramel-latte-hot.jpg", noIngredients: true, color: "yellow" },
+            { name: "Mocha Latte", imageFile: "mocha-latte-hot.jpg", noIngredients: true, color: "yellow" },
+            { name: "Vanilla Latte", imageFile: "vanilla-latte-hot.jpg", noIngredients: true, color: "yellow" },
+            { name: "Biscoff Latte", imageFile: "biscoff-latte-hot.jpg", noIngredients: true, color: "yellow" },
+            { name: "Pistachio Latte", imageFile: "pistachio-latte-hot.jpg", noIngredients: true, color: "green" }
+        ];
+
+        const espresso = [
+            { name: "Affogato", imageFile: "affogato.jpg", noIngredients: true, color: "yellow" },
+            { name: "Cappuccino", imageFile: "cappuccino.jpg", noIngredients: true, color: "yellow" },
+            { name: "Cortado", imageFile: "cortado2.jpg", noIngredients: true, color: "yellow" },
+            { name: "Americano", imageFile: "americano.jpg", noIngredients: true, color: "yellow" },
+            { name: "Espresso", imageFile: "espresso2.jpg", noIngredients: true, color: "yellow" }
+        ];
+
+        const traditionalStoveTop = [
+            { name: "Mufawwar", description: "iced/hot", imageFile: "mufawwar2.jpg", noIngredients: true, color: "yellow" },
+            { name: "Adeni", description: "iced/hot", imageFile: "adeni.jpg", noIngredients: true, color: "yellow" },
+            { name: "Turkish", imageFile: "turkish-coffee2.jpg", noIngredients: true, color: "yellow" }
+        ];
+
+        const icedDrinks = [
+            { name: "Bueno Latte", imageFile: "bueno-latte.jpg", noIngredients: true, color: "yellow" },
+            { name: "Spanish Latte", imageFile: "spanish-latte-iced.jpg", noIngredients: true, color: "yellow" },
+            { name: "Mocha Latte", imageFile: "mocha-latte-iced.jpg", noIngredients: true, color: "yellow" },
+            { name: "Vanilla Latte", imageFile: "vanilla-latte-iced.jpg", noIngredients: true, color: "yellow" },
+            { name: "Caramel Latte", imageFile: "caramel-latte-iced.jpg", noIngredients: true, color: "yellow" },
+            { name: "Biscoff Latte", imageFile: "biscoff-latte-iced.jpg", noIngredients: true, color: "yellow" },
+            { name: "Pistachio Latte", imageFile: "pistachio-latte-iced.jpg", noIngredients: true, color: "green" },
+            { name: "Matcha Latte", description: "Strawberry / Lavender / Vanilla", imageFile: "matcha-latte.jpg", noIngredients: true, color: "green" },
+            { name: "Brown Sugar Shaken", imageFile: "brown-sugar-shaken.jpg", noIngredients: true, color: "yellow" },
+            { name: "Frappe", imageFile: "frappe.jpg", noIngredients: true, color: "yellow" }
+        ];
+
+        const milkshakes = [
+            { name: "Vanilla", imageFile: "vanilla-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Chocolate", imageFile: "chocolate-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Strawberry", imageFile: "strawberry-milkshake.jpg", noIngredients: true, color: "red" },
+            { name: "Oreo", imageFile: "oreo-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Hershey's", imageFile: "hersheys-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Peanut Butter", imageFile: "peanut-butter-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Pistachio", imageFile: "pistachio-milkshake.jpg", noIngredients: true, color: "green" },
+            { name: "Kit Kat", imageFile: "kitkat-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Snickers", imageFile: "snickers-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Biscoff", imageFile: "biscoff-milkshake.jpg", noIngredients: true, color: "yellow" }
+        ];
+
+        const cerealMilkshakes = [
+            { name: "Fruit Loops", imageFile: "fruit-loops-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Cocoa Pebbles", imageFile: "cocoa-pebbles-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Cinnamon Toast Crunch", imageFile: "cinnamon-toast-crunch-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Fruity Pebbles", imageFile: "fruity-pebbles-milkshake.jpg", noIngredients: true, color: "yellow" },
+            { name: "Crunch Berries", imageFile: "crunch-berries-milkshake.jpg", noIngredients: true, color: "purple" },
+            { name: "Reese's Puffs", imageFile: "reeses-puffs-milkshake.jpg", noIngredients: true, color: "yellow" }
+        ];
+
+        const iceCream = [
+            { name: "Small Cup", imageFile: "small-cup.jpg", noIngredients: true, color: "yellow" },
+            { name: "Large Cup", imageFile: "large-cup.jpg", noIngredients: true, color: "yellow" },
+            { name: "Waffle Cone", imageFile: "waffle-cone.jpg", noIngredients: true, color: "yellow" },
+            { name: "Wafer Cone", imageFile: "wafer-cone.jpg", noIngredients: true, color: "yellow" },
+            { name: "Brownie Scoop", imageFile: "brownie-scoop.jpg", noIngredients: true, color: "yellow" },
+            { name: "Banana Split", imageFile: "banana-split.jpg", noIngredients: true, color: "yellow" }
+        ];
+
+        const energyRefreshers = [
+            { name: "Blackberry", imageFile: "blackberry-refresher.jpg", noIngredients: true, color: "purple" },
+            { name: "Strawberry", imageFile: "strawberry-refresher.jpg", noIngredients: true, color: "red" },
+            { name: "Peach", imageFile: "peach-refresher.jpg", noIngredients: true, color: "yellow" },
+            { name: "Raspberry", imageFile: "raspberry-refresher.jpg", noIngredients: true, color: "red" },
+            { name: "Cherry", imageFile: "cherry-refresher.jpg", noIngredients: true, color: "red" }
+        ];
+
         const rawJuiceGrid = document.getElementById('raw-juice-grid');
         const smoothiesGrid = document.getElementById('smoothies-grid');
         const smoothieBowlsGrid = document.getElementById('smoothie-bowls-grid');
+        const hotDrinksGrid = document.getElementById('hot-drinks-grid');
+        const espressoGrid = document.getElementById('espresso-grid');
+        const traditionalStoveTopGrid = document.getElementById('traditional-stove-top-grid');
+        const icedDrinksGrid = document.getElementById('iced-drinks-grid');
+        const milkshakesGrid = document.getElementById('milkshakes-grid');
+        const cerealMilkshakesGrid = document.getElementById('cereal-milkshakes-grid');
+        const iceCreamGrid = document.getElementById('ice-cream-grid');
+        const energyRefreshersGrid = document.getElementById('energy-refreshers-grid');
 
         function scrollToFooter() {
             document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
@@ -398,13 +609,15 @@
             const aspectClass = sectionType === 'juice' ? 'aspect-[4/5]' : 'aspect-[3/4]';
             const card = document.createElement('div');
             card.className = "break-inside-avoid w-full max-w-sm relative rounded-3xl overflow-hidden cursor-pointer group bg-white shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-500 animate-fade-in border border-stone-100";
-            
-            const peekIcons = smoothie.ingredients.slice(0, 3).map(ing => {
+
+            const showPeekIcons = !smoothie.noIngredients && smoothie.ingredients && smoothie.ingredients.length > 0;
+            const peekIcons = showPeekIcons ? smoothie.ingredients.slice(0, 3).map(ing => {
                 const iconSrc = getIngredientIcon(ing);
                 return `<div class="w-7 h-7 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-sm" title="${ing}">
                     <img src="${iconSrc}" alt="" loading="lazy" decoding="async" class="w-3.5 h-3.5 object-contain">
                  </div>`;
-            }).join('');
+            }).join('') : '';
+            const peekIconsRow = showPeekIcons ? `<div class="flex justify-center gap-2 pt-3 border-t border-white/20 w-full">${peekIcons}</div>` : '';
 
             card.innerHTML = `
                 <div class="relative w-full ${aspectClass} overflow-hidden bg-stone-100">
@@ -420,16 +633,14 @@
                     
                     <!-- Overlay -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
-                        <div class="transform translate-y-3 group-hover:translate-y-0 transition-transform duration-500 delay-75 flex flex-col items-start">
+                        <div class="transform translate-y-3 group-hover:translate-y-0 transition-transform duration-500 delay-75 flex flex-col items-center text-center w-full">
                             <h3 class="text-white text-xl font-bold tracking-tight leading-tight drop-shadow-sm mb-2">${smoothie.name}</h3>
-                            <div class="flex gap-2 pt-3 border-t border-white/20 w-full">
-                                ${peekIcons}
-                            </div>
+                            ${peekIconsRow}
                         </div>
                     </div>
                 </div>
             `;
-            
+
             card.onclick = () => openModal(smoothie);
             return card;
         }
@@ -438,7 +649,7 @@
             if (!gridEl) return;
             const type = sectionType || 'smoothie';
             items.forEach(item => {
-                item.img = getImagePath(item.name, type);
+                item.img = getImagePath(item.name, type, item.imageFile);
                 gridEl.appendChild(createCard(item, type));
             });
         }
@@ -450,7 +661,37 @@
         function openModal(smoothie) {
             document.getElementById('modal-title').innerText = smoothie.name;
             document.getElementById('modal-img').src = smoothie.img;
-            
+
+            const descEl = document.getElementById('modal-description');
+            const ingHeading = document.getElementById('modal-ingredients-heading');
+            const list = document.getElementById('modal-ingredients');
+
+            if (smoothie.noIngredients) {
+                ingHeading.style.display = 'none';
+                list.style.display = 'none';
+                list.innerHTML = '';
+                if (smoothie.description) {
+                    descEl.style.display = 'block';
+                    descEl.textContent = smoothie.description;
+                } else {
+                    descEl.style.display = 'none';
+                    descEl.textContent = '';
+                }
+            } else {
+                ingHeading.style.display = 'block';
+                list.style.display = 'block';
+                descEl.style.display = 'none';
+                descEl.textContent = '';
+                list.innerHTML = (smoothie.ingredients || []).map(ing => `
+                    <li class="flex items-center gap-3 py-2 border-b border-black/5 last:border-0">
+                        <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
+                            <img src="${getIngredientIcon(ing)}" alt="" class="w-4 h-4 object-contain">
+                        </div>
+                        <span class="text-sm font-semibold text-stone-700">${ing}</span>
+                    </li>
+                `).join('');
+            }
+
             const colorMap = {
                 'green': 'bg-[#F0FDF4]',
                 'red': 'bg-[#FEF2F2]',
@@ -458,22 +699,11 @@
                 'purple': 'bg-[#FAF5FF]'
             };
             const tintClass = colorMap[smoothie.color] || 'bg-white';
-            
             modalPanel.querySelector('.overflow-y-auto').className = `w-full md:w-1/2 p-8 md:p-10 flex flex-col overflow-y-auto transition-colors duration-500 ${tintClass}`;
-
-            const list = document.getElementById('modal-ingredients');
-            list.innerHTML = smoothie.ingredients.map(ing => `
-                <li class="flex items-center gap-3 py-2 border-b border-black/5 last:border-0">
-                    <div class="w-8 h-8 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#00D2FF]">
-                        <img src="${getIngredientIcon(ing)}" alt="" class="w-4 h-4 object-contain">
-                    </div>
-                    <span class="text-sm font-semibold text-stone-700">${ing}</span>
-                </li>
-            `).join('');
 
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            
+
             setTimeout(() => {
                 modalPanel.classList.remove('scale-95', 'opacity-0');
                 modalPanel.classList.add('scale-100', 'opacity-100');
@@ -494,6 +724,14 @@
         loadSectionItems(smoothies, smoothiesGrid, 'smoothie');
         loadSectionItems(smoothieBowls, smoothieBowlsGrid, 'bowl');
         loadSectionItems(rawJuice, rawJuiceGrid, 'juice');
+        loadSectionItems(hotDrinks, hotDrinksGrid, 'hot');
+        loadSectionItems(espresso, espressoGrid, 'espresso');
+        loadSectionItems(traditionalStoveTop, traditionalStoveTopGrid, 'stove');
+        loadSectionItems(icedDrinks, icedDrinksGrid, 'iced');
+        loadSectionItems(milkshakes, milkshakesGrid, 'milkshake');
+        loadSectionItems(cerealMilkshakes, cerealMilkshakesGrid, 'cereal-milkshake');
+        loadSectionItems(iceCream, iceCreamGrid, 'ice-cream');
+        loadSectionItems(energyRefreshers, energyRefreshersGrid, 'energy');
 
     </script>
 </body></html>
